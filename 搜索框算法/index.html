@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const data = {
+        label: "北京市",
+        children: [
+          {
+            label: "朝阳区",
+            children: [{ label: "建外街道" }, { label: "三里屯街道" }],
+          },
+          {
+            label: "东城区",
+            children: [
+              { label: "东直门街道" },
+              {
+                label: "东华门街道",
+                children: [{ label: "胡家园社区" }, { label: "新中街社区" }],
+              },
+            ],
+          },
+        ],
+      };
+
+      function search(keyword) {
+        const result = [];
+
+        const exec = (data, parentPath) => {
+          const currentPath = parentPath.concat(data.label);
+          if (data.label.search(keyword) > -1) {
+            result.push(currentPath);
+          }
+          if (Reflect.has(data, "children")) {
+            const children = data.children;
+            children.forEach((item) => {
+              exec(item, currentPath);
+            });
+          }
+        };
+
+        exec(data, []);
+
+        return result;
+      }
+
+      const res = search("阳");
+      console.log(res);
+    </script>
+  </body>
+</html>
