@@ -34,7 +34,7 @@
       // 判断类型是不是对象或者数组
       if(type === 'Object' || type === "Array") {
         // 通过map.get读取targetClone看有没有存储, 有存储直接返回
-        var targetClone = map.get(targetClone)
+        var targetClone = map.get(target)
         if(targetClone) return targetClone
 
         if(type === 'Object') {

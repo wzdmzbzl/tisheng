@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>Home</div>
+
+  <script>
+
+
+getProducts()
+
+function getProducts() {
+  const accessToken = localStorage.getItem('access_token')
+
+  fetch('http://localhost:8080/products', {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  }).then(async resp => {
+    const jsonData = await resp.json()
+
+    if(jsonData.code === 1003) {
+      refreshToken()
+      return
+    }
+
+    const products = jsonData.data
+    console.log(products);
+  })
+}
+
+function refreshToken() {
+  const refreshToken = localStorage.getItem('refresh_token')
+
+  fetch('http://localhost:8080/refresh_token', {
+    headers: {
+      'Authorization': `Bearer ${refreshToken}`
+    }
+  }).then(async resp => {
+    const jsonData = await resp.json()
+
+    if(jsonData.code === 1003) {
+      alert('登录失败')
+      location.href = 'http://localhost:8080/page/login'
+      return
+    }
+
+    localStorage.setItem('access_token', jsonData.data.access_token)
+    getProducts()
+  })
+}
+  </script>
+</body>
+</html>

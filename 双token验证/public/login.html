@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <p>
+      <input type="number" placeholder="手机号" id="mobile" />
+    </p>
+    <p>
+      <input type="password" placeholder="密码" id="password" />
+    </p>
+    <p>
+      <button id="loginBtn">登录</button>
+    </p>
+  </div>
+
+  <script>
+    const oMobile = document.querySelector('#mobile')
+    const oPass = document.querySelector('#password')
+    const oLoginBtn = document.querySelector('#loginBtn')
+
+    oLoginBtn.addEventListener('click', async () => {
+      if(oMobile.value.length !== 11) {
+        alert('手机格式不正确')
+        return
+      }
+
+      if(oPass.value.length < 6 || oPass.value.length > 20) {
+        alert('密码格式不正确')
+        return
+      }
+
+      const resp = await fetch('http://localhost:8080/logins', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          mobile: oMobile.value,
+          password: oPass.value
+        })
+      })
+
+
+      const jsonData = await resp.json()
+
+      if(!resp.ok) {
+        alert(jsonData.msg)
+        return
+      }
+
+      localStorage.setItem('access_token', jsonData.data.access_token)
+      localStorage.setItem('refresh_token', jsonData.data.refresh_token)
+
+      location.href= 'http://localhost:8080/page/home'
+
+    }, false)
+
+  </script>
+</body>
+</html>
