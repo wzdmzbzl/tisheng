@@ -58,6 +58,77 @@
       }
     }
 
+
+    function deepClone2(origin, target) {
+      var tar = target || {};
+
+      for(var k in origin) {
+        if(origin.hasOwnProperty(k)) {
+          if(typeof origin[k] === 'object' && origin[k] !== null) {
+            tar[k] = Object.prototype.toString.call(origin[k]).slice === 'Array'? [] : {};
+            deepClone2(origin[k], tar[k])
+          }else {
+            tar[k] = origin[k]
+          }
+        }
+      }
+
+      return tar;
+    }
+
+    function deepClone3(origin, hashMap = new WeakMap()) {
+      if(origin == undefined || typeof origin !== 'object') return origin;
+
+      if(origin instanceof Date) {
+        return new Date(origin)
+      }
+
+      if(origin instanceof RegExp) {
+        return new RegExp(origin)
+      }
+
+      const hashKey = hashMap.get(origin);
+
+      if(hashKey) {
+        return hashKey
+      }
+
+      const target = new origin.constructor();
+      hashMap.set(origin, target)
+      for(let k in origin) {
+        if(origin.hasOwnProperty(k)) {
+          target[k] = deepClone3(origin[k], hashMap)
+        }
+      }
+
+      return target
+
+    }
+
+    const newObj = deepClone3(obj)
+    newObj.person.age = 20
+    console.log(newObj, obj);
+
+    console.log(new obj.constructor);
+
+    let arr = [1, 2, 4]
+    for(var k in arr) {
+      console.log(k);
+    }
+
+
+    const map = new WeakMap()
+    let o = {a:1}
+    map.set(o, '1111');
+    // map.delete(o)
+    // console.log(map.get(o));
+    console.log(map.has(o));
+
+    console.log(map);
+
+
+
+
   </script>
 </body>
 </html>
